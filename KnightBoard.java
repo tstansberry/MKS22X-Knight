@@ -12,8 +12,8 @@ public class KnightBoard {
     String output = "";
     for (int[] x: board) {
       for (int y: x) {
-        if (y == -1) output += "Q ";
-        else output += "_ ";
+        if (y / 10 == 0 && y != 10) output += " " + y + " ";
+        else output += y + " ";
       }
       output = output.substring(0, output.length() - 1);
       output += "\n";
@@ -26,6 +26,6 @@ public class KnightBoard {
   }
 
   private boolean solveH(int row ,int col, int level) {
-    
+
   }
 }
