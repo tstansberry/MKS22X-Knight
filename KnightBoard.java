@@ -6,9 +6,8 @@ public class KnightBoard {
   private int solutions;
 
   public static void main(String[] args) {
-    KnightBoard board = new KnightBoard(4, 4);
-    //System.out.println(board.solve(0,0));
-    board.setMoves();
+    KnightBoard board = new KnightBoard(8, 8);
+    System.out.println(board.solve(0,0));
     System.out.println(board);
   }
 
@@ -45,8 +44,13 @@ public class KnightBoard {
 
   public boolean solve(int startingRow, int startingCol) {
     if (startingRow < 0 || startingCol < 0 || startingRow > rows - 1 || startingCol > cols - 1) throw new IllegalArgumentException();
-    solveH(startingRow, startingCol, 1, false);
-    return solutions > 0;
+    if (board.length > 3 && board[0].length > 3) {
+          return solveOpt(startingRow, startingCol, 1);
+    }
+    else {
+      solveH(startingRow, startingCol, 1, false);
+      return solutions > 0;
+    }
   }
 
   private void solveH(int row ,int col, int level, boolean count) {
@@ -67,7 +71,12 @@ public class KnightBoard {
   }
 
   private boolean solveOpt(int row, int col, int level) {
-    return true;
+    if (row < 0 || row >= rows || col < 0 || col >= cols) return false;
+    if (board[row][col] != 0) return false;
+    board[row][col] = level;
+
+    if (level >= rows * cols) return true;
+    return true; //Dummy value
   }
 
   public void setMoves() {
@@ -86,7 +95,6 @@ public class KnightBoard {
         if ((x == 0 || x == rows - 1) && (y == 0 || y == cols - 1)) moves[x][y] = 2;
       }
     }
-    board = moves;
   }
 
   private int[] moveKnight(int direction, int r, int c) {
