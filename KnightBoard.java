@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class KnightBoard {
   private int[][] board;
   public int[][] moves;
@@ -79,7 +81,7 @@ public class KnightBoard {
     return true; //Dummy value
   }
 
-  public void setMoves() {
+  private void setMoves() {
     for (int x = 0; x < rows; x ++) {
       for (int y = 0; y < cols; y ++) {
         moves[x][y] = 8;
@@ -109,6 +111,42 @@ public class KnightBoard {
     else if (direction == 7) ans = new int[] {r + 1, c - 2};
     else ans = new int[] {r, c};
     return ans;
+  }
+
+  public int[][] moveKnightOpt(int r, int c) {
+    int[][] possible = new int[8][2];
+    for (int x = 0; x < 8; x ++) {
+      possible[x] = moveKnight(x, r, c);
+    }
+
+    int[] ans = new int[8];
+    for (int y = 0; y < 8; y ++) {
+      ans[y] = moves[possible[y][0]][possible[y][1]];
+    }
+    doubleSort(ans, possible);
+    return possible;
+  }
+
+  private static void doubleSort(int ary[], int[][] follower) {
+    for (int x = 1; x < ary.length; x ++) {
+      int target = ary[x];
+      int[] target2 = follower[x];
+      for (int y = x - 1; y >= 0; y --) {
+        if (target < ary[y]) {
+          ary[y + 1] = ary[y];
+          follower[y + 1] = follower[y];
+          if (y == 0) {
+            ary[0] = target;
+            follower[0] = target2;
+          }
+          else {
+          ary[y + 1] = target;
+          follower[y + 1] = target2;
+          y = -1;
+          }
+        }
+      }
+    }
   }
 
   private boolean checkStuck(int r, int c) {
