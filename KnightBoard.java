@@ -76,9 +76,21 @@ public class KnightBoard {
     if (row < 0 || row >= rows || col < 0 || col >= cols) return false;
     if (board[row][col] != 0) return false;
     board[row][col] = level;
+    moves[row][col] = 0;
 
+    int[][] possibles = moveKnightOpt(row, col);
     if (level >= rows * cols) return true;
-    return true; //Dummy value
+
+    for (int x = 0; x < possibles.length; x ++) {
+      if (possibles[x][0] > 0 && possibles[x][1] > 0) {
+        if (solveOpt(possibles[x][0], possibles[x][1], level + 1)) return true;
+      }
+    }
+    for (int i = 0; i < options.length; i++) {
+      outgoing[moveKnight(r, c, options[i])[0]][moveKnight(r, c, options[i])[1]]++;
+    }
+    board[r][c] = 0;
+    return false;
   }
 
   private void setMoves() {
@@ -121,9 +133,20 @@ public class KnightBoard {
 
     int[] ans = new int[8];
     for (int y = 0; y < 8; y ++) {
-      ans[y] = moves[possible[y][0]][possible[y][1]];
+      try{
+        ans[y] = moves[possible[y][0]][possible[y][1]];
+      }
+      catch(ArrayIndexOutOfBoundsException e) {
+        ans[y] = -1;
+      }
     }
     doubleSort(ans, possible);
+
+    for (int z = 0; z < 8; z ++) {
+      if (ans[z] == -1 || ans[z] == 0) {
+        possible[z] = new int[]{-1, -1};
+      }
+    }
     return possible;
   }
 
