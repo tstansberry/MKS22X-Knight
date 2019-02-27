@@ -19,10 +19,10 @@ public class KnightBoard {
       for (int y : x) y = 0;
     }
     moves = new int[startingRows][startingCols];
-    setMoves();
     solutions = 0;
     rows = board.length;
     cols = board[0].length;
+    this.setMoves();
   }
 
   public String toString() {
@@ -100,7 +100,8 @@ public class KnightBoard {
         if (x == 0 || x == rows - 1 || y == 0 || y == cols - 1) {
           if (moves[x][y] == 6) {
             moves[x][y] = 3;
-          } else {
+          }
+          else {
             moves[x][y] = 4;
           }
         }
@@ -160,11 +161,11 @@ public class KnightBoard {
             ary[0] = target;
             follower[0] = target2;
           }
-          else {
+        }
+        else {
           ary[y + 1] = target;
           follower[y + 1] = target2;
           y = -1;
-          }
         }
       }
     }
@@ -198,6 +199,18 @@ public class KnightBoard {
       return false;
     }
     return true;
+  }
+
+  public static String arrayPrint(int[][] ary) {
+    String output = "";
+    for (int[] x: ary) {
+      for (int y: x) {
+        output += y + " ";
+      }
+      output = output.substring(0, output.length() - 1);
+      output += "\n";
+    }
+    return output;
   }
 
 }
