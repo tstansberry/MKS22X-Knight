@@ -13,7 +13,7 @@ public class KnightBoard {
 
       board = new KnightBoard(i, i);
       System.out.println(i+"x"+i+": " + board.solve(0,0));
-      //System.out.println(board);
+      System.out.println(board);
     }
   }
 
@@ -31,12 +31,15 @@ public class KnightBoard {
 
   public String toString() {
     String output = "";
-    for (int[] x: board) {
-      for (int y: x) {
-        if (y / 10 == 0 && y != 10) output += " " + y + " ";
-        else output += y + " ";
+    for (int x = 0; x < rows; x++) {
+      for (int y = 0; y < cols; y++) {
+        if (rows * cols > 10 && board[x][y] < 10) output += " ";
+        if (board[x][y] != 0) {
+          output += board[x][y] + " ";
+        } else {
+          output += "_ ";
+        }
       }
-      output = output.substring(0, output.length() - 1);
       output += "\n";
     }
     return output;
@@ -74,7 +77,7 @@ public class KnightBoard {
           solveH(coords[0], coords[1], level + 1, count);
         }
       }
-      board[row][col] = 0;
+      if (solutions == 0 || count) board[row][col] = 0;
     }
   }
 
@@ -112,7 +115,7 @@ public class KnightBoard {
           catch(ArrayIndexOutOfBoundsException e) {}
         }
       }
-      board[row][col] = 0;
+      if (solutions == 0) board[row][col] = 0;
     }
   }
 
