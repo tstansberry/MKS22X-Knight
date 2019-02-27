@@ -8,7 +8,7 @@ public class KnightBoard {
   private int solutions;
 
   public static void main(String[] args) {
-    KnightBoard board = new KnightBoard(8, 8);
+    KnightBoard board = new KnightBoard(5, 5);
     System.out.println(board.solve(0,0));
     System.out.println(board);
   }
@@ -47,12 +47,12 @@ public class KnightBoard {
   public boolean solve(int startingRow, int startingCol) {
     if (startingRow < 0 || startingCol < 0 || startingRow > rows - 1 || startingCol > cols - 1) throw new IllegalArgumentException();
     if (board.length > 3 && board[0].length > 3) {
-          return solveOpt(startingRow, startingCol, 1);
+          solveOpt(startingRow, startingCol, 1);
     }
     else {
       solveH(startingRow, startingCol, 1, false);
-      return solutions > 0;
     }
+    return solutions > 0;
   }
 
   private void solveH(int row ,int col, int level, boolean count) {
@@ -72,25 +72,23 @@ public class KnightBoard {
     }
   }
 
-  private boolean solveOpt(int row, int col, int level) {
-    if (row < 0 || row >= rows || col < 0 || col >= cols) return false;
-    if (board[row][col] != 0) return false;
-    board[row][col] = level;
-    moves[row][col] = 0;
-
-    int[][] possibles = moveKnightOpt(row, col);
-    if (level >= rows * cols) return true;
-
-    for (int x = 0; x < possibles.length; x ++) {
-      if (possibles[x][0] > 0 && possibles[x][1] > 0) {
-        if (solveOpt(possibles[x][0], possibles[x][1], level + 1)) return true;
+  private void solveOpt(int row, int col, int level) {
+    if (solutions > 0) ;
+    else if (row > rows - 1 || row < 0 || col > cols - 1 || col < 0);
+    else if (board[row][col] != 0);
+    else if (addKnight(row, col)) {
+      board[row][col] = 1;
+      if (checkSolution()) solutions ++;
+      else {
+        int[][] possibles = moveKnightOpt(row, col);
+        for (int x = 0; x < possibles.length; x ++) {
+          if (possibles[x][0] > 0 && possibles[x][1] > 0) {
+            solveOpt(possibles[x][0], possibles[x][1], level + 1);
+          }
+        }
       }
+      board[row][col] = 0;
     }
-    for (int i = 0; i < options.length; i++) {
-      outgoing[moveKnight(r, c, options[i])[0]][moveKnight(r, c, options[i])[1]]++;
-    }
-    board[r][c] = 0;
-    return false;
   }
 
   private void setMoves() {
