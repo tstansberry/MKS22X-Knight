@@ -8,9 +8,13 @@ public class KnightBoard {
   private int solutions;
 
   public static void main(String[] args) {
-    KnightBoard board = new KnightBoard(5, 5);
-    System.out.println(board.solve(0,0));
-    System.out.println(board);
+    KnightBoard board;
+    for (int i = 1; i < 25; i++){
+
+      board = new KnightBoard(i, i);
+      System.out.println(i+"x"+i+": " + board.solve(0,0));
+      //System.out.println(board);
+    }
   }
 
   public KnightBoard(int startingRows,int startingCols) {
@@ -39,12 +43,14 @@ public class KnightBoard {
   }
 
   public int countSolutions(int startingRow, int startingCol)  {
+    solutions = 0;
     if (startingRow < 0 || startingCol < 0 || startingRow > rows - 1 || startingCol > cols - 1) throw new IllegalArgumentException();
     solveH(startingRow, startingCol, 1, true);
     return solutions;
   }
 
   public boolean solve(int startingRow, int startingCol) {
+    solutions = 0;
     if (startingRow < 0 || startingCol < 0 || startingRow > rows - 1 || startingCol > cols - 1) throw new IllegalArgumentException();
     if (board.length > 3 && board[0].length > 3) {
           solveOpt(startingRow, startingCol, 1);
@@ -75,16 +81,35 @@ public class KnightBoard {
   private void solveOpt(int row, int col, int level) {
     if (solutions > 0) ;
     else if (row > rows - 1 || row < 0 || col > cols - 1 || col < 0);
-    else if (board[row][col] != 0);
     else if (addKnight(row, col)) {
-      board[row][col] = 1;
-      if (checkSolution()) solutions ++;
+      board[row][col] = level;
+      for (int x = 0; x < 8; x ++) {
+        try {
+          int[] coords = moveKnight(x, row, col);
+          moves[coords[0]][coords[1]] --;
+        }
+        catch(ArrayIndexOutOfBoundsException e) {}
+      }
+      if (checkSolution()) {
+        solutions ++;
+      }
       else {
+        //System.out.println("_________________");
         int[][] possibles = moveKnightOpt(row, col);
+        //System.out.println(arrayPrint(board));
+        //System.out.println(arrayPrint(moves));
+        //System.out.println(arrayPrint(possibles));
         for (int x = 0; x < possibles.length; x ++) {
-          if (possibles[x][0] > 0 && possibles[x][1] > 0) {
+          if (possibles[x][0] >= 0 && possibles[x][1] >= 0) {
             solveOpt(possibles[x][0], possibles[x][1], level + 1);
           }
+        }
+        for (int x = 0; x < 8; x ++) {
+          try {
+            int[] coords = moveKnight(x, row, col);
+            moves[coords[0]][coords[1]] ++;
+          }
+          catch(ArrayIndexOutOfBoundsException e) {}
         }
       }
       board[row][col] = 0;
@@ -124,7 +149,7 @@ public class KnightBoard {
     return ans;
   }
 
-  public int[][] moveKnightOpt(int r, int c) {
+  private int[][] moveKnightOpt(int r, int c) {
     int[][] possible = new int[8][2];
     for (int x = 0; x < 8; x ++) {
       possible[x] = moveKnight(x, r, c);
@@ -134,15 +159,16 @@ public class KnightBoard {
     for (int y = 0; y < 8; y ++) {
       try{
         ans[y] = moves[possible[y][0]][possible[y][1]];
+        if (board[possible[y][0]][possible[y][1]] != 0) ans[y] = -1;
       }
-      catch(ArrayIndexOutOfBoundsException e) {
+      catch(IndexOutOfBoundsException e) {
         ans[y] = -1;
       }
     }
     doubleSort(ans, possible);
 
     for (int z = 0; z < 8; z ++) {
-      if (ans[z] == -1 || ans[z] == 0) {
+      if (ans[z] == -1) {
         possible[z] = new int[]{-1, -1};
       }
     }
